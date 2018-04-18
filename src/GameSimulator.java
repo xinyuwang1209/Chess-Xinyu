@@ -20,6 +20,15 @@ public class GameSimulator {
 		return(PrevMove);
 	}
 	
+	public int[][] GetAvailChess(int Player) {
+		if (Player == 1) {
+			return(P1AvailChess);
+		}
+		else {
+			return(P2AvailChess);
+		}
+	}
+	
 	public GameSimulator(){
 	}
 	
@@ -49,7 +58,7 @@ public class GameSimulator {
 	}
 	public boolean CheckMoveValidality(int ChessOrgX, int ChessOrgY, int ChessDesX, int ChessDesY) {
 		int[][] ChessMoveList = GetMoveList(Board[ChessOrgX][ChessOrgY],ChessOrgX,ChessOrgY);
-		if (ChessMoveList[ChessDesX][ChessDesY] == 0) {
+		if (ChessMoveList[ChessDesX][ChessDesY] == 1) {
 			return(true);
 		}
 		else {
@@ -57,10 +66,10 @@ public class GameSimulator {
 		}
 	}
 	
-	public void DisplayBoardInConsole() {
-		for (int i = 0; i < Board.length; i++) {
-		    for (int j = 0; j < Board[i].length; j++) {
-		        System.out.print(Board[i][j] + " ");
+	public void DisplayMatrixInConsole(int[][] Matrix) {
+		for (int i = 0; i < Matrix.length; i++) {
+		    for (int j = 0; j < Matrix[i].length; j++) {
+		        System.out.print(Matrix[i][j] + " ");
 		    }
 		    System.out.println();
 		}
@@ -92,28 +101,28 @@ public class GameSimulator {
 		P1AvailChess[7][0] = 0;
 		P1AvailChess[7][1] = 7;		
 		
-		Board[7][4]=-1;
+		Board[7][4]=1;
 		P2AvailChess[0][0] = 7;
 		P2AvailChess[0][1] = 4;		
-		Board[7][3]=-2;
+		Board[7][3]=2;
 		P2AvailChess[1][0] = 7;
 		P2AvailChess[1][1] = 3;		
-		Board[7][2]=-3;
+		Board[7][2]=3;
 		P2AvailChess[2][0] = 7;
 		P2AvailChess[2][1] = 2;		
-		Board[7][5]=-3;
+		Board[7][5]=3;
 		P2AvailChess[3][0] = 7;
 		P2AvailChess[3][1] = 5;		
-		Board[7][1]=-4;
+		Board[7][1]=4;
 		P2AvailChess[4][0] = 7;
 		P2AvailChess[4][1] = 1;		
-		Board[7][6]=-4;
+		Board[7][6]=4;
 		P2AvailChess[5][0] = 7;
 		P2AvailChess[5][1] = 6;		
-		Board[7][0]=-5;
+		Board[7][0]=5;
 		P2AvailChess[6][0] = 7;
 		P2AvailChess[6][1] = 0;		
-		Board[7][7]=-5;
+		Board[7][7]=5;
 		P2AvailChess[7][0] = 7;
 		P2AvailChess[7][1] = 7;		
 		
@@ -137,10 +146,12 @@ public class GameSimulator {
 	public boolean DeathCheck() {
 		if (Board[P1KingX][P1KingY] != -1) {
 			DeathFlag = true;
+			System.out.println("P2 wins");
 			Winner = 2;
 		}
 		if (Board[P2KingX][P2KingY] != 1) {
 			DeathFlag = true;
+			System.out.println("P1 wins");
 			Winner = 1;
 		} 
 		else {
@@ -529,7 +540,9 @@ public class GameSimulator {
 		else if (ChessAbsId == 6) {
 			if (Board[ChessX-ChessSign][ChessY] == 0) {
 				MoveList[ChessX-ChessSign][ChessY] = 1;
-				if ((ChessX == 1) && (ChessSign == -1) | (ChessX == 6) && (ChessSign == 1)) {
+//				System.out.println("For two moves");
+//				System.out.println(((ChessX == 1) && (ChessSign == -1)) | ((ChessX == 6) && (ChessSign == 1)));
+				if (((ChessX == 1) && (ChessSign == -1)) | ((ChessX == 6) && (ChessSign == 1))) {
 					if (Board[ChessX-2*ChessSign][ChessY] == 0) {
 						MoveList[ChessX-2*ChessSign][ChessY] = 1;
 					}
@@ -537,29 +550,29 @@ public class GameSimulator {
 			}
 			if (ChessY > 0) {
 				temp = (int) Math.signum(Board[ChessX-ChessSign][ChessY-1]);
-				if (temp != ChessSign) {
+				if ((temp != ChessSign) & (Board[ChessX-ChessSign][ChessY-1] != 0)) {
 					MoveList[ChessX-ChessSign][ChessY-1] = 1;
 				}
-				if (ChessX + ChessSign/2 == 3.5) {
-					if ((Board[ChessX][ChessY-1] == -ChessId) && (Board[ChessX-2*ChessSign][ChessY-1] == 0)) {
-						if ((PrevBoard[ChessX-2*ChessSign][ChessY-1] == 0) && (PrevBoard[ChessX][ChessY-1] == -ChessId)) {
-							MoveList[ChessX-ChessSign][ChessY-1] = 1;
-						}					
-					}					
-				}
+//				if (ChessX + ChessSign/2 == 3.5) {
+//					if ((Board[ChessX][ChessY-1] == -ChessId) && (Board[ChessX-2*ChessSign][ChessY-1] == 0)) {
+//						if ((PrevBoard[ChessX-2*ChessSign][ChessY-1] == 0) && (PrevBoard[ChessX][ChessY-1] == -ChessId)) {
+//							MoveList[ChessX-ChessSign][ChessY-1] = 1;
+//						}					
+//					}					
+//				}
 			}
 			if (ChessY < 7) {
 				temp = (int) Math.signum(Board[ChessX-ChessSign][ChessY+1]);
-				if (temp != ChessSign) {
+				if ((temp != ChessSign) & (Board[ChessX-ChessSign][ChessY+1] != 0)) {
 					MoveList[ChessX-ChessSign][ChessY+1] = 1;
 				}
-				if (ChessX + ChessSign/2 == 3.5) {
-					if ((Board[ChessX][ChessY+1] == -ChessId) && (Board[ChessX-2*ChessSign][ChessY+1] == 0)) {
-						if ((PrevBoard[ChessX-2*ChessSign][ChessY+1] == 0) && (PrevBoard[ChessX][ChessY+1] == -ChessId)) {
-							MoveList[ChessX-ChessSign][ChessY+1] = 1;
-						}
-					}
-				}
+//				if (ChessX + ChessSign/2 == 3.5) {
+//					if ((Board[ChessX][ChessY+1] == -ChessId) && (Board[ChessX-2*ChessSign][ChessY+1] == 0)) {
+//						if ((PrevBoard[ChessX-2*ChessSign][ChessY+1] == 0) && (PrevBoard[ChessX][ChessY+1] == -ChessId)) {
+//							MoveList[ChessX-ChessSign][ChessY+1] = 1;
+//						}
+//					}
+//				}
 			}
 		}
 		return(MoveList);
@@ -567,14 +580,19 @@ public class GameSimulator {
 	}
 	
 	public boolean Move(int Player, int ChessOrgX, int ChessOrgY, int ChessDesX, int ChessDesY) {
+		System.out.println("Trying to move Chess...");
 		int temp = (int) Math.signum(Board[ChessOrgX][ChessOrgY]);
-		if (!((temp == -1) & (Player == 1)) & !((temp == -1) & (Player == 2))) {
+		System.out.println("Sign of targeted Chess: " + Integer.toString(temp));
+		if (((temp == 1) & (Player == 1)) | ((temp == -1) & (Player == 2))) {
+			System.out.println("You cannot move other player's chess!");
 			return(false);
 		}
 		else if (Turn != Player) {
+			System.out.println("It's not your turn to move chess!");
 			return(false);
 		}
 		else {
+			System.out.println("Player Identity verified");
 			boolean IsMoveValid = CheckMoveValidality(ChessOrgX, ChessOrgY, ChessDesX, ChessDesY);
 			if (!IsMoveValid) {
 				return(false);
@@ -582,7 +600,6 @@ public class GameSimulator {
 			else {
 				int[][] TempBoard = CloneBoard(Board);
 				//special rule will apply here
-				PrevBoard = CloneBoard(TempBoard);
 				//record King's coordinate
 				if (Math.abs(Board[ChessOrgX][ChessOrgY]) == 1) {
 					if (Player == 1) {
@@ -601,7 +618,14 @@ public class GameSimulator {
 				PrevMove[2] = ChessDesX;
 				PrevMove[3] = ChessDesY;
 				
-				
+				System.out.println("Chess Moved from (" + Integer.toString(ChessOrgX)+ ", " + Integer.toString(ChessOrgY) + ") to (" + Integer.toString(ChessDesX) + ", " + Integer.toString(ChessDesY) + ")");
+				PrevBoard = CloneBoard(Board);
+				if (Turn == 1) {
+					Turn = 2;
+				}
+				else {
+					Turn = 1;
+				}
 				return(true);
 			}
 		}
